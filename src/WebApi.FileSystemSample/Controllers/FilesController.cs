@@ -2,6 +2,7 @@
 {
     using System.Net;
     using System.Net.Http;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Http;
     using FileSystem.FlowJS;
@@ -17,10 +18,9 @@
         }
 
         [Route()]
-        public HttpResponseMessage Get()
+        public async Task<HttpResponseMessage> Get()
         {
             var parameters = _parameterReader.Read(Request);
-
 
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }

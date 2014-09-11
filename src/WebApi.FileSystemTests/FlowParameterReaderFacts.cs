@@ -3,6 +3,9 @@
     using System;
     using System.IO;
     using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Threading.Tasks;
+    using FileSystem;
     using FileSystem.FlowJS;
     using FluentAssertions;
     using Xunit;
@@ -10,7 +13,7 @@
     public class FlowParameterReaderFacts
     {
         [Fact]
-        public void ReadParametersFromGetRequest()
+        public async Task ReadParametersFromGetRequest()
         {
             /* given */
             var httpRequest = new HttpRequestMessage
@@ -29,7 +32,7 @@
             var reader = new FlowParametersReader();
 
             /* when */
-            var parameters = reader.Read(httpRequest);
+            var parameters = await reader.ReadGetAsync(httpRequest);
 
             /* then */
             parameters.FlowChunkNumber.ShouldBeEquivalentTo(1);
@@ -40,13 +43,19 @@
         }
 
         [Fact]
-        public void ReadParametersFromPostRequest()
+        public async Task ReadParametersFromPostRequest()
         {
             /* given */
             var httpRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri("http://files/upload")
+            };
+
+            var streamContent = new StreamContent(new MemoryStream());
+            streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = "my-file.txt"
             };
 
             var formDataContent = new MultipartFormDataContent
@@ -56,21 +65,31 @@
                 {new StringContent("1024"), "flowTotalSize"},
                 {new StringContent("0001-my-file.file"), "flowIdentifier"},
                 {new StringContent("my-file.file"), "flowFilename"},
-                {new StreamContent(new MemoryStream()), "content", "my-file.txt"}
+                {streamContent, "content", "my-file.txt"}
             };
 
+            using (formDataContent)
+            {
 
-            var reader = new FlowParametersReader();
+                httpRequest.Content = formDataContent;
 
-            /* when */
-            var parameters = reader.Read(httpRequest);
+                var reader = new FlowParametersReader();
 
-            /* then */
-            parameters.FlowChunkNumber.ShouldBeEquivalentTo(1);
-            parameters.FlowChunkSize.ShouldBeEquivalentTo(2048);
-            parameters.FlowTotalSize.ShouldBeEquivalentTo(1024);
-            parameters.FlowIdentifier.ShouldBeEquivalentTo("0001-my-file.file");
-            parameters.FlowFilename.ShouldBeEquivalentTo("my-file.file");
+                /* when */
+                FlowParameters parameters;
+                using (var memoryStream = new MemoryStream())
+                {
+                    parameters =
+                        await reader.ReadPostAsync(httpRequest, new StreamMultipartProvider(() => memoryStream));
+                }
+
+                /* then */
+                parameters.FlowChunkNumber.ShouldBeEquivalentTo(1);
+                parameters.FlowChunkSize.ShouldBeEquivalentTo(2048);
+                parameters.FlowTotalSize.ShouldBeEquivalentTo(1024);
+                parameters.FlowIdentifier.ShouldBeEquivalentTo("0001-my-file.file");
+                parameters.FlowFilename.ShouldBeEquivalentTo("my-file.file");
+            }
         }
     }
 }

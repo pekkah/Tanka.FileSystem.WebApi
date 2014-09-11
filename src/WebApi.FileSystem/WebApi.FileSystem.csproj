@@ -55,6 +55,7 @@
     <Compile Include="FlowJS\FlowParameters.cs" />
     <Compile Include="FlowJS\FlowParametersReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamMultipartProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

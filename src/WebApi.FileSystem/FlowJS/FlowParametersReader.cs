@@ -1,19 +1,38 @@
 namespace Tanka.WebApi.FileSystem.FlowJS
 {
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Linq;
     using System.Net.Http;
+    using System.Threading.Tasks;
 
     public class FlowParametersReader
     {
-        public FlowParameters Read(HttpRequestMessage request)
+        public FlowParameters Create(NameValueCollection nameValueCollection)
         {
-            var query = request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
+            Dictionary<string, string> dictionary = nameValueCollection.Cast<string>()
+                .Select(s => new {Key = s, Value = nameValueCollection[s]})
+                .ToDictionary(p => p.Key, p => p.Value);
 
-            return Create(query);
+            return Create(dictionary);
         }
 
-        private FlowParameters Create(Dictionary<string, string> query)
+        public async Task<FlowParameters> ReadGetAsync(HttpRequestMessage request)
+        {
+            Dictionary<string, string> dictionary = request.GetQueryNameValuePairs()
+                .ToDictionary(x => x.Key, x => x.Value);
+
+            return Create(dictionary);
+        }
+
+        public async Task<FlowParameters> ReadPostAsync<T>(HttpRequestMessage request, T streamProvider) where T : MultipartFormDataStreamProvider
+        {
+            await request.Content.ReadAsMultipartAsync(streamProvider);
+
+            return Create(streamProvider.FormData);
+        }
+
+        private FlowParameters Create(IDictionary<string, string> query)
         {
             return new FlowParameters
             {
@@ -27,7 +46,19 @@ namespace Tanka.WebApi.FileSystem.FlowJS
             };
         }
 
-        private ulong? Ulong(Dictionary<string, string> values, string key, ulong? defaultValue = null)
+        private string String(IDictionary<string, string> values, string key, string defaultValue = null)
+        {
+            string stringValue;
+
+            if (values.TryGetValue(key, out stringValue))
+            {
+                return stringValue;
+            }
+
+            return defaultValue;
+        }
+
+        private ulong? Ulong(IDictionary<string, string> values, string key, ulong? defaultValue = null)
         {
             string stringValue;
 
@@ -38,18 +69,6 @@ namespace Tanka.WebApi.FileSystem.FlowJS
                 {
                     return tempValue;
                 }
-            }
-
-            return defaultValue;
-        }
-
-        private string String(Dictionary<string, string> values, string key, string defaultValue = null)
-        {
-            string stringValue;
-
-            if (values.TryGetValue(key, out stringValue))
-            {
-                return stringValue;
             }
 
             return defaultValue;
