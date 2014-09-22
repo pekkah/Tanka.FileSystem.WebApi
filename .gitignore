@@ -213,3 +213,5 @@ $RECYCLE.BIN/
 *.msp
 
 bower_components/
+
+App_Data/

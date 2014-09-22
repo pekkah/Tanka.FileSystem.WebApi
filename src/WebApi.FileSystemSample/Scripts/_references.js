@@ -16,3 +16,4 @@
 /// <reference path="../app/components/files.module.js" />
 /// <reference path="angular-ui/ui-bootstrap-tpls.js" />
 /// <reference path="angular-ui/ui-bootstrap.js" />
+/// <reference path="../app/app.flow.js" />

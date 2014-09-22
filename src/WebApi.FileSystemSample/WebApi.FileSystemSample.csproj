@@ -219,6 +219,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\app.flow.js" />
     <Content Include="App\app.js" />
     <Content Include="App\components\files.folder.html" />
     <Content Include="App\components\files.folder.js" />
