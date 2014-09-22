@@ -52,10 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FlowJS\FlowParameters.cs" />
-    <Compile Include="FlowJS\FlowParametersReader.cs" />
+    <Compile Include="FileSystem\FileSystem.cs" />
+    <Compile Include="FlowJS\Flow.cs" />
+    <Compile Include="FlowJS\FlowRequest.cs" />
+    <Compile Include="FlowJS\FlowRequestReader.cs" />
+    <Compile Include="FlowJS\FlowRequestContext.cs" />
+    <Compile Include="IFileSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StreamMultipartProvider.cs" />
+    <Compile Include="FlowJS\FlowTemporaryFileProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

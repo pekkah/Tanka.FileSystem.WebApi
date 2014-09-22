@@ -1,6 +1,8 @@
 ﻿namespace Tanka.WebApi.FileSystem.FlowJS
 {
-    public class FlowParameters
+    using System;
+
+    public class FlowRequest
     {
         /// <summary>
         /// The index of the chunk in the current upload. 
@@ -43,5 +45,12 @@
         /// (defaults to file name in all browsers except Chrome).
         /// </summary>
         public string FlowRelativePath { get; set; }
+
+        public bool IsLastChunk
+        {
+            get { return FlowChunkNumber == FlowTotalChunks; }
+        }
+
+        public Tuple<string, string> TemporaryFile { get; set; }
     }
 }

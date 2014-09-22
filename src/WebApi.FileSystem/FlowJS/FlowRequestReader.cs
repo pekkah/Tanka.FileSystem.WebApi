@@ -6,9 +6,9 @@ namespace Tanka.WebApi.FileSystem.FlowJS
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    public class FlowParametersReader
+    public class FlowRequestReader
     {
-        public FlowParameters Create(NameValueCollection nameValueCollection)
+        public FlowRequest Create(NameValueCollection nameValueCollection)
         {
             Dictionary<string, string> dictionary = nameValueCollection.Cast<string>()
                 .Select(s => new {Key = s, Value = nameValueCollection[s]})
@@ -17,7 +17,7 @@ namespace Tanka.WebApi.FileSystem.FlowJS
             return Create(dictionary);
         }
 
-        public async Task<FlowParameters> ReadGetAsync(HttpRequestMessage request)
+        public async Task<FlowRequest> ReadGetAsync(HttpRequestMessage request)
         {
             Dictionary<string, string> dictionary = request.GetQueryNameValuePairs()
                 .ToDictionary(x => x.Key, x => x.Value);
@@ -25,16 +25,20 @@ namespace Tanka.WebApi.FileSystem.FlowJS
             return Create(dictionary);
         }
 
-        public async Task<FlowParameters> ReadPostAsync<T>(HttpRequestMessage request, T streamProvider) where T : MultipartFormDataStreamProvider
+        public async Task<FlowRequest> ReadPostAsync(FlowRequestContext context, IFileSystem fileSystem)
         {
-            await request.Content.ReadAsMultipartAsync(streamProvider);
+            var provider = new FlowTemporaryFileProvider(context, fileSystem);
+            await context.HttpRequest.Content.ReadAsMultipartAsync(provider);
 
-            return Create(streamProvider.FormData);
+            var flowRequest = Create(provider.FormData);
+            flowRequest.TemporaryFile = provider.TemporaryFiles.Single();
+
+            return flowRequest;
         }
 
-        private FlowParameters Create(IDictionary<string, string> query)
+        private FlowRequest Create(IDictionary<string, string> query)
         {
-            return new FlowParameters
+            return new FlowRequest
             {
                 FlowChunkNumber = Ulong(query, "flowChunkNumber"),
                 FlowChunkSize = Ulong(query, "flowChunkSize"),
