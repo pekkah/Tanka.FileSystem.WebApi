@@ -26,7 +26,8 @@
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                 "~/Scripts/angular.js",
                 "~/Scripts/angular-*",
-                "~/bower_components/ng-flow/dist/ng-flow-standalone.js"));
+                "~/bower_components/ng-flow/dist/ng-flow-standalone.js",
+                "~/bower_components/fusty-flow.js/src/*.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
                 "~/App/app.js",

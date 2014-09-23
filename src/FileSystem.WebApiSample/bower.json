@@ -1,5 +1,5 @@
 {
-  "name": "WebApi.FileSystemSample",
+  "name": "Tanka.FileSystem.WebApiSample",
   "version": "1.0.0",
   "authors": [
     "Pekka Heikura <pekkah@gmail.com>"
@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "ng-flow": "~2.5.1"
+    "ng-flow": "~2.5.1",
+    "fusty-flow.js": "~1.1.0"
   }
 }

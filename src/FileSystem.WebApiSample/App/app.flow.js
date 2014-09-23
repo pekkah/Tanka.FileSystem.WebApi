@@ -18,6 +18,6 @@
         });
 
         // Can be used with different implementations of Flow.js
-        // flowFactoryProvider.factory = fustyFlowFactory;
+        flowFactoryProvider.factory = fustyFlowFactory;
     }
 })();
