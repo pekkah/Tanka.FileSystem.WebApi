@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.FileSystemSample", "WebApi.FileSystemSample\WebApi.FileSystemSample.csproj", "{7B65E907-2CDF-43C7-8FC0-B2D0FD52DEF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSystem.WebApiSample", "FileSystem.WebApiSample\FileSystem.WebApiSample.csproj", "{7B65E907-2CDF-43C7-8FC0-B2D0FD52DEF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.FileSystemSampleTests", "WebApi.FileSystemSampleTests\WebApi.FileSystemSampleTests.csproj", "{F50E8D89-3809-4703-91B3-CD6D16FFE002}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSystem.WebApiSampleTests", "FileSystem.WebApiSampleTests\FileSystem.WebApiSampleTests.csproj", "{F50E8D89-3809-4703-91B3-CD6D16FFE002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.FileSystem", "WebApi.FileSystem\WebApi.FileSystem.csproj", "{0364EB9C-ABF5-42D5-9E10-D1444A94B161}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSystem.WebApi", "FileSystem.WebApi\FileSystem.WebApi.csproj", "{0364EB9C-ABF5-42D5-9E10-D1444A94B161}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.FileSystemTests", "WebApi.FileSystemTests\WebApi.FileSystemTests.csproj", "{E0FB5596-A27B-4428-8EB7-6B022C6ED037}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSystem.WebApiTests", "FileSystem.WebApiTests\FileSystem.WebApiTests.csproj", "{E0FB5596-A27B-4428-8EB7-6B022C6ED037}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
