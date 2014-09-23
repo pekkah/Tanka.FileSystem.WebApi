@@ -1,7 +1,7 @@
 Tanka FileSystem
 ================
 
-HTML5 file uploads using [ng-flow]() and ASP.NET WebApi
+HTML5 file uploads using [Angular.JS][] with [ng-flow][] and ASP.NET WebApi
 
 ## Installation
 
@@ -13,7 +13,7 @@ nuget install <package-coming-later>
 
 1. Clone this repository
 2. Run bower install on the Tanka.FileSystem.WebApiSample directory
-   - This will install [Flow.JS] and [Fusty-Flow.JS]
+   - This will install [ng-flow][] and [Fusty-Flow.JS][]
 3. Start the Tanka.FileSystem.WebApiSample
 
 
@@ -29,9 +29,9 @@ nuget install <package-coming-later>
 
 ## How it works?
 
-- <blog-post-coming-soon>
+- Blog post coming soon!
 
-
-  [ng-flow](https://github.com/flowjs/ng-flow)
-  [Flow.JS](https://github.com/flowjs/flow.js)
-  [Fusty-Flow.JS](https://github.com/flowjs/fusty-flow.js)
+[Angular.JS]: https://angularjs.org
+[ng-flow]: https://github.com/flowjs/ng-flow
+[Flow.JS]: https://github.com/flowjs/flow.js
+[Fusty-Flow.JS]: https://github.com/flowjs/fusty-flow.js
