@@ -29,7 +29,7 @@ nuget install <package-coming-later>
 
 ## How it works?
 
-- Blog post coming soon!
+- [File upload using Flow.JS and ASP.NET WebApi](http://www.heikura.me/file-upload-using-flowjs-and-aspnet-webapi)
 
 [Angular.JS]: https://angularjs.org
 [ng-flow]: https://github.com/flowjs/ng-flow
