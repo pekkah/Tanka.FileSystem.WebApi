@@ -14,7 +14,7 @@
     public class FilesController : ApiController
     {
         private readonly Flow _flow;
-        private FileSystem _fileSystem;
+        private readonly FileSystem _fileSystem;
 
         public FilesController()
         {
@@ -29,10 +29,14 @@
             _flow = new Flow(_fileSystem);
         }
 
-        [Route("{folderName}/{fileName}")]
-        public async Task<HttpResponseMessage> Get(string folderName, string fileName)
+        [Route("{*filePath}")]
+        public async Task<HttpResponseMessage> GetFile(string filePath)
         {
-            var filePath = string.Concat(folderName, "/", fileName);
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Invalid path");
+            }
+
             if (!await _fileSystem.ExistsAsync(filePath))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "File not found");
@@ -42,7 +46,7 @@
             response.Content = new StreamContent(await _fileSystem.OpenReadAsync(filePath));
             response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
             {
-                FileName = fileName
+                FileName = filePath.Substring(filePath.LastIndexOf('/') + 1)
             };
 
             return response;
