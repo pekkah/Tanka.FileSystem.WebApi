@@ -5,21 +5,16 @@
 
     public class FlowRequestContext
     {
-        private readonly HttpRequestMessage _httpRequest;
-
         public FlowRequestContext(HttpRequestMessage httpRequest)
         {
-            _httpRequest = httpRequest;
+            HttpRequest = httpRequest;
             GetFileNameFunc = parameters => "";
             GetChunkFileNameFunc = parameters => "";
-            GetTempFileNameFunc = fileName => string.Format("file_{0}", Guid.NewGuid());
+            GetTempFileNameFunc = fileName => $"file_{Guid.NewGuid()}";
             GetTempPathFunc = () => "temp";
         }
 
-        public HttpRequestMessage HttpRequest
-        {
-            get { return _httpRequest; }
-        }
+        public HttpRequestMessage HttpRequest { get; }
 
         public Func<FlowRequest, string> GetFileNameFunc { get; set; }
 

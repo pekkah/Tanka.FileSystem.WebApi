@@ -46,10 +46,7 @@
         /// </summary>
         public string FlowRelativePath { get; set; }
 
-        public bool IsLastChunk
-        {
-            get { return FlowChunkNumber == FlowTotalChunks; }
-        }
+        public bool IsLastChunk => FlowChunkNumber == FlowTotalChunks;
 
         public Tuple<string, string> TemporaryFile { get; set; }
     }

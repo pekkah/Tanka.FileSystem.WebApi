@@ -20,19 +20,13 @@
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri(
-                    string.Format(
-                        "https://files/upload?flowChunkNumber={0}&flowChunkSize={1}&flowTotalSize={2}&flowIdentifier={3}&flowFilename={4}",
-                        1,
-                        2048,
-                        1024,
-                        "0001-my-file.file",
-                        "my-file.file"), UriKind.Absolute)
+                    $"https://files/upload?flowChunkNumber={1}&flowChunkSize={2048}&flowTotalSize={1024}&flowIdentifier=0001-my-file.file&flowFilename=my-file.file", UriKind.Absolute)
             };
 
             var reader = new FlowRequestReader();
 
             /* when */
-            var parameters = await reader.ReadGetAsync(httpRequest);
+            var parameters = await reader.ReadGetAsync(httpRequest).ConfigureAwait(false);
 
             /* then */
             parameters.FlowChunkNumber.ShouldBeEquivalentTo(1);
@@ -79,7 +73,7 @@
                 using (var memoryStream = new MemoryStream())
                 {
                     request =
-                        await reader.ReadPostAsync(context, new FileSystem());
+                        await reader.ReadPostAsync(context, new FileSystem()).ConfigureAwait(false);
                 }
 
                 /* then */

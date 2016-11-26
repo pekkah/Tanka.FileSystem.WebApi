@@ -22,7 +22,7 @@
         {
             if (context.HttpRequest.Method == HttpMethod.Get)
             {
-                return await HandleGetRequest(context);
+                return await HandleGetRequest(context).ConfigureAwait(false);
             }
 
             if (context.HttpRequest.Method != HttpMethod.Post)
@@ -32,12 +32,12 @@
                     "Only GET and POST requests supported");
             }
 
-            return await HandlePostRequest(context);
+            return await HandlePostRequest(context).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> HandleGetRequest(FlowRequestContext context)
         {
-            FlowRequest request = await _requestReader.ReadGetAsync(context.HttpRequest);
+            FlowRequest request = await _requestReader.ReadGetAsync(context.HttpRequest).ConfigureAwait(false);
 
             if (!IsValidRequest(context, request))
             {
@@ -48,10 +48,10 @@
 
             string filePath = GetChunkFilePath(context, request);
 
-            if (!await _fileSystem.ExistsAsync(filePath))
+            if (!await _fileSystem.ExistsAsync(filePath).ConfigureAwait(false))
             {
                 return context.HttpRequest.CreateErrorResponse(
-                    HttpStatusCode.NotFound,
+                    HttpStatusCode.NoContent,
                     "File not found");
             }
 
@@ -71,12 +71,12 @@
             // read request 
             FlowRequest request = await _requestReader.ReadPostAsync(
                 context,
-                _fileSystem);
+                _fileSystem).ConfigureAwait(false);
 
             // is valid request?
             if (!IsValidRequest(context, request))
             {
-                await _fileSystem.DeleteAsync(request.TemporaryFile.Item1);
+                await _fileSystem.DeleteAsync(request.TemporaryFile.Item1).ConfigureAwait(false);
                 return context.HttpRequest.CreateErrorResponse(
                     HttpStatusCode.BadRequest,
                     "Invalid flow POST request");
@@ -85,21 +85,21 @@
             // upload temporary to chunks
             var chunkFilePath = GetChunkFilePath(context, request);
 
-            using (Stream chunkStream = await _fileSystem.OpenWriteAsync(chunkFilePath))
+            using (Stream chunkStream = await _fileSystem.OpenWriteAsync(chunkFilePath).ConfigureAwait(false))
             {
-                using (Stream tempStream = await _fileSystem.OpenReadAsync(request.TemporaryFile.Item1))
+                using (Stream tempStream = await _fileSystem.OpenReadAsync(request.TemporaryFile.Item1).ConfigureAwait(false))
                 {
-                    await tempStream.CopyToAsync(chunkStream);
+                    await tempStream.CopyToAsync(chunkStream).ConfigureAwait(false);
                 }
             }
 
             // delete temporary
-            await _fileSystem.DeleteAsync(request.TemporaryFile.Item1);
+            await _fileSystem.DeleteAsync(request.TemporaryFile.Item1).ConfigureAwait(false);
 
             // if last chunk combine and move to files
             if (request.IsLastChunk)
             {
-                await CombineAsync(context, request);
+                await CombineAsync(context, request).ConfigureAwait(false);
             }
 
             return context.HttpRequest.CreateResponse(HttpStatusCode.OK);
@@ -113,22 +113,22 @@
                 context.GetFileName(request));
 
             var chunkPath = context.GetChunkPathFunc(request);
-            var chunkFilePaths = await _fileSystem.ListDirectoryAsync(chunkPath);
+            var chunkFilePaths = await _fileSystem.ListDirectoryAsync(chunkPath).ConfigureAwait(false);
 
-            using (var fileStream = await _fileSystem.OpenWriteAsync(filePath))
+            using (var fileStream = await _fileSystem.OpenWriteAsync(filePath).ConfigureAwait(false))
             {
                 foreach (var file in chunkFilePaths)
                 {
-                    using (var sourceStream = await _fileSystem.OpenReadAsync(file))
+                    using (var sourceStream = await _fileSystem.OpenReadAsync(file).ConfigureAwait(false))
                     {
-                        await sourceStream.CopyToAsync(fileStream);
+                        await sourceStream.CopyToAsync(fileStream).ConfigureAwait(false);
                     }
                 }
 
-                await fileStream.FlushAsync();
+                await fileStream.FlushAsync().ConfigureAwait(false);
             }
 
-            await _fileSystem.DeleteDirectoryAsync(chunkPath);
+            await _fileSystem.DeleteDirectoryAsync(chunkPath).ConfigureAwait(false);
         }
 
         private bool IsValidRequest(FlowRequestContext context, FlowRequest request)

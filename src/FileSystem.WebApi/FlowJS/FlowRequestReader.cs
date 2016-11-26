@@ -18,18 +18,21 @@ namespace Tanka.FileSystem.WebApi.FlowJS
             return Create(dictionary);
         }
 
-        public async Task<FlowRequest> ReadGetAsync(HttpRequestMessage request)
+        public Task<FlowRequest> ReadGetAsync(HttpRequestMessage request)
         {
-            Dictionary<string, string> dictionary = request.GetQueryNameValuePairs()
-                .ToDictionary(x => x.Key, x => x.Value);
+            return Task.Run(() =>
+            {
+                Dictionary<string, string> dictionary = request.GetQueryNameValuePairs()
+                    .ToDictionary(x => x.Key, x => x.Value);
 
-            return Create(dictionary);
+                return Create(dictionary);
+            });
         }
 
         public async Task<FlowRequest> ReadPostAsync(FlowRequestContext context, IFileSystem fileSystem)
         {
             var provider = new FlowTemporaryFileProvider(context, fileSystem);
-            await context.HttpRequest.Content.ReadAsMultipartAsync(provider);
+            await context.HttpRequest.Content.ReadAsMultipartAsync(provider).ConfigureAwait(false);
 
             var flowRequest = Create(provider.FormData);
             flowRequest.TemporaryFile = provider.TemporaryFiles.Single();

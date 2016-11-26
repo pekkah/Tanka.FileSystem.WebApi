@@ -57,7 +57,7 @@
             string actualDirectory = GetFilePath(directory);
             IEnumerable<string> files = Directory.EnumerateFiles(actualDirectory)
                 .OrderBy(file => file)
-                .Select(path => path.Substring(path.IndexOf(ToFileSystemPath(directory))).Replace("\\", "/"));
+                .Select(path => path.Substring(path.IndexOf(ToFileSystemPath(directory), StringComparison.Ordinal)).Replace("\\", "/"));
 
             return Task.FromResult(files);
         }

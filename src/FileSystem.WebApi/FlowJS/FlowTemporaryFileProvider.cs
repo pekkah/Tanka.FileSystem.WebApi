@@ -50,12 +50,12 @@
         {
             if (parent == null)
             {
-                throw new ArgumentNullException("parent");
+                throw new ArgumentNullException(nameof(parent));
             }
 
             if (headers == null)
             {
-                throw new ArgumentNullException("headers");
+                throw new ArgumentNullException(nameof(headers));
             }
 
             // For form data, Content-Disposition header is a requirement.

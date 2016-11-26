@@ -20,10 +20,7 @@
         {
             _fileSystem = new FileSystem
             {
-                GetFilePathFunc = filePath => string.Format(
-                    "{0}/{1}",
-                    HostingEnvironment.MapPath("~/App_Data").Replace("\\", "/"),
-                    filePath)
+                GetFilePathFunc = filePath => $"{HostingEnvironment.MapPath("~/App_Data").Replace("\\", "/")}/{filePath}"
             };
 
             _flow = new Flow(_fileSystem);
@@ -37,13 +34,13 @@
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Invalid path");
             }
 
-            if (!await _fileSystem.ExistsAsync(filePath))
+            if (!await _fileSystem.ExistsAsync(filePath).ConfigureAwait(false))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "File not found");
             }
 
             var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StreamContent(await _fileSystem.OpenReadAsync(filePath));
+            response.Content = new StreamContent(await _fileSystem.OpenReadAsync(filePath).ConfigureAwait(false));
             response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
             {
                 FileName = filePath.Substring(filePath.LastIndexOf('/') + 1)
@@ -57,7 +54,7 @@
         {
             var context = CreateContext(folderName);
 
-            return await _flow.HandleRequest(context);
+            return await _flow.HandleRequest(context).ConfigureAwait(false);
         }
 
         [Route("uploads/{folderName}")]
@@ -65,7 +62,7 @@
         {
             var context = CreateContext(folderName);
 
-            return await _flow.HandleRequest(context);
+            return await _flow.HandleRequest(context).ConfigureAwait(false);
         }
 
         private FlowRequestContext CreateContext(string folderName)
@@ -76,11 +73,11 @@
                     "{1}_{0}.chunk",
                     parameters.FlowIdentifier,
                     parameters.FlowChunkNumber.Value.ToString().PadLeft(8, '0')),
-                GetChunkPathFunc = parameters => string.Format("{0}/chunks/{1}", folderName, parameters.FlowIdentifier),
+                GetChunkPathFunc = parameters => $"{folderName}/chunks/{parameters.FlowIdentifier}",
                 GetFileNameFunc = parameters => parameters.FlowFilename,
                 GetFilePathFunc = parameters => folderName,
-                GetTempFileNameFunc = filePath => string.Format("file_{0}.tmp", Guid.NewGuid()),
-                GetTempPathFunc = () => string.Format("{0}/temp", folderName),
+                GetTempFileNameFunc = filePath => $"file_{Guid.NewGuid()}.tmp",
+                GetTempPathFunc = () => $"{folderName}/temp",
                 MaxFileSize = ulong.MaxValue
             };
         }
